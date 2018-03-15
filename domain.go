@@ -24,3 +24,22 @@ type Domain struct {
 	Records          string
 	MinTtl           int `json:"min_ttl"`
 }
+
+//获取域名列表
+func (cli *Client) DomainList() ([]Domain, error) {
+	var respInfo struct {
+		BaseResponse
+		Data struct {
+			Info struct {
+				DomainTotal int `json:"domain_total"`
+			}
+			Domains []Domain
+		}
+	}
+	err := cli.requestGET("DomainList", nil, &respInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	return respInfo.Data.Domains, nil
+}
