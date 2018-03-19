@@ -168,3 +168,19 @@ func (cli *Client) RecordModify(domain string, record Record) error {
 
 	return nil
 }
+
+//删除指定“域名”的“解析记录”
+func (cli *Client) RecordDelete(domain string, recordId int) error {
+	param := url.Values{
+		"domain":   {domain},
+		"recordId": {strconv.Itoa(recordId)},
+	}
+
+	var respInfo BaseResponse
+	err := cli.requestGET("RecordDelete", param, &respInfo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
