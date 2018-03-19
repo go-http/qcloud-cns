@@ -94,3 +94,16 @@ func (cli *Client) SetDomainStatus(domain string, enable bool) error {
 
 	return nil
 }
+
+//删除域名
+func (cli *Client) DomainDelete(domain string) error {
+	param := url.Values{"domain": {domain}}
+
+	var respInfo BaseResponse
+	err := cli.requestGET("DomainDelete", param, &respInfo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
