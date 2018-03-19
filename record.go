@@ -122,3 +122,49 @@ func (cli *Client) RecordStatus(domain string, recordId int, enable bool) error 
 
 	return nil
 }
+
+//添加指定“域名”的“解析记录”
+func (cli *Client) RecordModify(domain string, record Record) error {
+	if record.Line == "" {
+		record.Line = "默认"
+	}
+
+	//必选参数
+	param := url.Values{
+		"domain":     {domain},
+		"recordId":   {strconv.Itoa(record.Id)},
+		"subDomain":  {record.Name},
+		"recordType": {record.Type},
+		"recordLine": {record.Line},
+		"value":      {record.Value},
+	}
+
+	//可选TTL参数，缺省为600
+	if record.Ttl > 0 {
+		param.Set("ttl", strconv.Itoa(record.Ttl))
+	}
+
+	//MX记录必须的额外参数
+	if record.Type == "MX" {
+		param.Set("mx", strconv.Itoa(record.Mx))
+	}
+
+	var respInfo struct {
+		BaseResponse
+		Data struct {
+			Record struct {
+				Id     int
+				Name   string
+				Value  string
+				Status string
+				Weight interface{}
+			}
+		}
+	}
+	err := cli.requestGET("RecordModify", param, &respInfo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
