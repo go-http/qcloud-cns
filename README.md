@@ -2,6 +2,34 @@
 
 [腾讯云 云解析模块API](https://cloud.tencent.com/document/product/302) Go语言SDK
 
+## 使用方法
+```sh
+go get github.com/athurg/go-qcloud-cns-sdk 
+```
+
+## 使用范例
+```golang
+package main
+
+import (
+	"github.com/athurg/go-qcloud-cns-sdk"
+	"log"
+)
+
+func main() {
+	cli := cns.New("secretId", "secretKey")
+	domains, err := cli.DomainList()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, domain := range domains {
+		log.Println(domain)
+	}
+}
+```
+
+
 ## 完成状态
 
 - [x] 域名相关接口
