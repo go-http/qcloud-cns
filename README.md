@@ -1,4 +1,4 @@
-# go-qcloud-cns-sdk
+# 腾讯云云解析SDK
 
 [腾讯云 云解析模块API](https://cloud.tencent.com/document/product/302) Go语言SDK
 
