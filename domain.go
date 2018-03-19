@@ -75,3 +75,22 @@ func (cli *Client) DomainCreate(domain string, projectId ...int) (int, error) {
 
 	return respInfo.Data.Domain.Id, nil
 }
+
+//设置域名解析状态
+func (cli *Client) SetDomainStatus(domain string, enable bool) error {
+	param := url.Values{"domain": {domain}}
+
+	if enable {
+		param.Set("status", "enable")
+	} else {
+		param.Set("status", "disable")
+	}
+
+	var respInfo BaseResponse
+	err := cli.requestGET("SetDomainStatus", param, &respInfo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
