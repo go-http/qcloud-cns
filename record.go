@@ -100,3 +100,25 @@ func (cli *Client) RecordCreate(domain string, record Record) (int, error) {
 
 	return respInfo.Data.Record.Id, nil
 }
+
+//设置指定“域名”的“解析记录”状态
+func (cli *Client) RecordStatus(domain string, recordId int, enable bool) error {
+	param := url.Values{
+		"domain":   {domain},
+		"recordId": {strconv.Itoa(recordId)},
+	}
+
+	if enable {
+		param.Set("status", "enable")
+	} else {
+		param.Set("status", "disable")
+	}
+
+	var respInfo BaseResponse
+	err := cli.requestGET("RecordStatus", param, &respInfo)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
