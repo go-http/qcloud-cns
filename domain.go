@@ -1,5 +1,10 @@
 package cns
 
+import (
+	"net/url"
+	"strconv"
+)
+
 //“域名”的数据结构
 type Domain struct {
 	Id               int
@@ -42,4 +47,31 @@ func (cli *Client) DomainList() ([]Domain, error) {
 	}
 
 	return respInfo.Data.Domains, nil
+}
+
+//添加域名，如果成功，返回创建的域名ID
+func (cli *Client) DomainCreate(domain string, projectId ...int) (int, error) {
+	param := url.Values{"domain": {domain}}
+
+	if len(projectId) > 0 {
+		param.Set("projectId", strconv.Itoa(projectId[0]))
+	}
+
+	var respInfo struct {
+		BaseResponse
+		Data struct {
+			Domain struct {
+				Id       int `json:",string"`
+				Punycode string
+				Domain   string
+			}
+		}
+	}
+
+	err := cli.requestGET("DomainCreate", param, &respInfo)
+	if err != nil {
+		return 0, err
+	}
+
+	return respInfo.Data.Domain.Id, nil
 }
