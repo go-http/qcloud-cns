@@ -151,16 +151,22 @@ func (cli *Client) RecordModify(domain string, record Record) error {
 
 	var respInfo struct {
 		BaseResponse
-		Data struct {
-			Record struct {
-				Id     int
-				Name   string
-				Value  string
-				Status string
-				Weight interface{}
-			}
-		}
+
+		//FIXME: 腾讯文档上描述的是如下的返回结构
+		//Data struct {
+		//	Record struct {
+		//		Id     int
+		//		Name   string
+		//		Value  string
+		//		Status string
+		//		Weight interface{}
+		//	}
+		//}
+		//事实上返回的可能是个空白的数组[]，不知道腾讯想要搞什么
+		//这里就只有用interface{}了
+		Data interface{}
 	}
+
 	err := cli.requestGET("RecordModify", param, &respInfo)
 	if err != nil {
 		return err
