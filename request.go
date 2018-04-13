@@ -1,6 +1,7 @@
 package cns
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -34,12 +35,12 @@ func (resp BaseResponse) Error() error {
 const Uri = "cns.api.qcloud.com/v2/index.php"
 
 //GET类型的API请求封装
-func (cli *Client) requestGET(action string, param url.Values, respInfo Responser) error {
+func (cli *Client) requestGET(action string, param url.Values, respInfo interface{}) error {
 	return cli.request("GET", action, param, nil, respInfo)
 }
 
 //API请求的封装（内建公共参数、签名的设置）
-func (cli *Client) request(method, action string, param url.Values, body io.Reader, respInfo Responser) error {
+func (cli *Client) request(method, action string, param url.Values, body io.Reader, respInfo interface{}) error {
 	if param == nil {
 		param = url.Values{}
 	}
@@ -64,10 +65,21 @@ func (cli *Client) request(method, action string, param url.Values, body io.Read
 	}
 	defer resp.Body.Close()
 
-	err = json.NewDecoder(resp.Body).Decode(respInfo)
+	w, ok := respInfo.(*bytes.Buffer)
+	if ok {
+		io.Copy(w, resp.Body)
+		return nil
+	}
+
+	info, ok := respInfo.(Responser)
+	if !ok {
+		return fmt.Errorf("不可识别的响应结构参数")
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(info)
 	if err != nil {
 		return fmt.Errorf("读取响应错误: %s", err)
 	}
 
-	return respInfo.Error()
+	return info.Error()
 }
