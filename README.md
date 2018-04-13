@@ -1,5 +1,7 @@
 # 腾讯云云解析SDK
 
+[![GoDoc](https://godoc.org/github.com/athurg/go-qcloud-cns-sdk?status.svg)](http://godoc.org/github.com/athurg/go-qcloud-cns-sdk)
+
 [腾讯云 云解析模块API](https://cloud.tencent.com/document/product/302) Go语言SDK
 
 ## 使用方法
